@@ -8,12 +8,16 @@ on:
     branches:
       - main
 
+env:
+  DUMMY_ENV: "Environment Variable Exists"
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Run actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Set up Python 3.12.7
         uses: actions/setup-python@v4
@@ -22,32 +26,30 @@ jobs:
 
       - name: Check Env
         run: |
-          echo $CSV_URL
+          echo "Checking Environment Variable..."
+          echo "DUMMY_ENV = $DUMMY_ENV"
+
+      - name: Set MLflow Tracking URI
+        run: |
+          export MLFLOW_TRACKING_URI="file:./mlruns"
+          echo "MLflow Tracking URI set to local folder"
+
+      - name: Run mlflow project
+        run: |
+          mlflow run MLProject --env-manager=local
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install mlflow
 
-      - name: Run mlflow project
-        run: |
-          mlflow run MLProject --env-manager=local
-
-      - name: Set up Git LFS
+      - name: Upload to Github
         run: |
           git config --global user.name ${{ secrets.username }}
           git config --global user.email ${{ secrets.email }}
           git lfs install
           git lfs track "mlruns/**"
           git add .gitattributes
-          git commit -m "Track large files in mlruns with Git LFS" || true
-          git push origin main
-            
-      # Save models to GitHub Repository
-      - name: Save mlruns to repo
-        run: |
-          git config --global user.name ${{ secrets.username }}
-          git config --global user.email ${{ secrets.email }}
           git add -f mlruns/
-          git commit -m "Save mlruns from CI run" || true
+          git commit -m "Upload mlruns output from CI" || true
           git push origin main

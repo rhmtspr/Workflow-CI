@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000/")
+mlflow.set_tracking_uri("file:./mlruns")
 
 mlflow.set_experiment("Star Classification")
 
@@ -19,9 +19,6 @@ input_example = X_train.iloc[:5]
 
 with mlflow.start_run():
     mlflow.autolog()
-
-    n_estimators = 505
-    max_depth = 37
 
     model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth)
 
