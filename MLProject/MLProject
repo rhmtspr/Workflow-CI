@@ -1,4 +1,4 @@
-name: latihan-cs-mlflow
+name: star-classification-mlflow
  
 conda_env: conda.yaml
  
