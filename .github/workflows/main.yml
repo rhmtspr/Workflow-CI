@@ -29,6 +29,11 @@ jobs:
           echo "Checking Environment Variable..."
           echo "DUMMY_ENV = $DUMMY_ENV"
 
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mlflow
+
       - name: Set MLflow Tracking URI
         run: |
           export MLFLOW_TRACKING_URI="file:./mlruns"
@@ -37,11 +42,14 @@ jobs:
       - name: Run mlflow project
         run: |
           mlflow run MLProject --env-manager=local
-
-      - name: Install dependencies
+        
+      - name: Install Python dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install mlflow
+          if [ -f "MLProject/requirements.txt" ]; then
+            pip install -r MLProject/requirements.txt
+          else
+            echo "Tidak ada requirements.txt"
+          fi
 
       - name: Upload to Github
         run: |
