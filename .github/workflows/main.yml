@@ -54,10 +54,12 @@ jobs:
             echo "Tidak ada requirements.txt"
           fi
 
-      - name: Upload to Github
+      - name: Upload to Github LFS
         run: |
           git config --global user.name ${{ secrets.username }}
           git config --global user.email ${{ secrets.email }}
-          git add mlruns/
-          git commit -m "Save mlruns from CI run"
+          git lfs track "mlruns/**"
+          git add .gitattributes
+          git add -f mlruns/
+          git commit -m "Upload mlruns output from CI" || true
           git push origin main
