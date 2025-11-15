@@ -22,13 +22,13 @@ with mlflow.start_run():
 
     model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth)
 
+    model.fit(X_train, y_train)
+
     mlflow.sklearn.log_model(
         sk_model=model,
         artifact_path="model",
         input_example=input_example,
     )
-
-    model.fit(X_train, y_train)
 
     accuracy = model.score(X_test, y_test)
     mlflow.log_metric("accuracy", accuracy)
