@@ -7,8 +7,9 @@ mlflow.set_tracking_uri("file:./mlruns")
 
 mlflow.set_experiment("Star Classification")
 
-n_estimators = int(sys.argv[1])
-max_depth = int(sys.argv[2])
+n_estimators = int(sys.argv[1]) if len(sys.argv) > 1 else 505
+max_depth = int(sys.argv[2]) if len(sys.argv) > 2 else 37
+
 
 X_train = pd.read_csv("star_classification_preprocessing/X_train.csv")
 X_test = pd.read_csv("star_classification_preprocessing/X_test.csv")
@@ -18,8 +19,6 @@ y_test = pd.read_csv("star_classification_preprocessing/y_test.csv")["class"]
 input_example = X_train.iloc[:5]
 
 with mlflow.start_run():
-    mlflow.autolog()
-
     model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth)
 
     model.fit(X_train, y_train)
